@@ -4,7 +4,6 @@ function editFormSubmit(name, description, newName, newDescription) {
 }
 
 function addNewPlace(
-  form,
   newName,
   newLink,
   container,
@@ -16,7 +15,6 @@ function addNewPlace(
   }
   const item = { name: newName, link: newLink };
   container.prepend(createCard(item, cardTemplate));
-  form.reset();
 }
 
 export { editFormSubmit, addNewPlace };

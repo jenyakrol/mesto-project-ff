@@ -22,9 +22,7 @@ const editButton = document.querySelector(".profile__edit-button");
 const editPopup = document.querySelector(".popup_type_edit");
 const editForm = document.forms["edit-profile"];
 const editName = editForm.elements.name;
-editName.value = profileName.textContent;
 const editDescription = editForm.elements.description;
-editDescription.value = profileDescription.textContent;
 const editSubmit = editForm.querySelector(".popup__button");
 
 const addButton = document.querySelector(".profile__add-button");
@@ -53,6 +51,8 @@ cardsConatiner.addEventListener("click", (evt) => {
 });
 
 editButton.addEventListener("click", (evt) => {
+  editName.value = profileName.textContent;
+  editDescription.value = profileDescription.textContent;
   openPopup(editPopup);
   closePopupFunction(editPopup, closePopup);
 });
@@ -69,13 +69,13 @@ addButton.addEventListener("click", (evt) => {
 addSubmit.addEventListener("click", (evt) => {
   evt.preventDefault();
   addNewPlace(
-    addForm,
     newPlace.value,
     newImage.value,
     cardsConatiner,
     cardTemplate,
     createCard
   );
+  addForm.reset()
   closePopup(addPopup)
 });
 
