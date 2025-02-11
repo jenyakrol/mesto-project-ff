@@ -3,13 +3,7 @@ function editFormSubmit(name, description, newName, newDescription) {
   description.textContent = newDescription;
 }
 
-function addNewPlace(
-  newName,
-  newLink,
-  container,
-  cardTemplate,
-  createCard
-) {
+function addNewPlace(newName, newLink, container, cardTemplate, createCard) {
   if (!newName || !newLink) {
     return;
   }
