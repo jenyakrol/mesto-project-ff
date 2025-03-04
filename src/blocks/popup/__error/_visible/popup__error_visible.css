@@ -1,0 +1,12 @@
+.popup__error_visible {
+  display: block;
+  color: red;
+  font-size: 12px;
+  height: 0;
+  position: relative;
+  top: -6px;
+}
+
+.popup__error_visible:last-of-type {
+  top: 4px;
+}

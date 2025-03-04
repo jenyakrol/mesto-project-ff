@@ -1,13 +1,14 @@
 import "../pages/index.css";
-import { createCard, deleteCard, likeCard } from "./card.js";
-import initialCards from "./cards.js";
-import { addNewPlace, editFormSubmit } from "./forms.js";
+import { createCard, deleteCard, likeCard } from "./modules/card.js";
+import initialCards from "./modules/cards.js";
+import { addNewPlace, editFormSubmit } from "./modules/forms.js";
 import {
   addAnimation,
   addCloseClicksFunctionality,
   closePopup,
   openPopup,
-} from "./modal.js";
+} from "./modules/modal.js";
+import { clearValidaton, enableValidation } from "./modules/validation.js";
 
 const cardTemplate = document.querySelector("#card-template").content;
 const cardsConatiner = document.querySelector(".places__list");
@@ -33,6 +34,15 @@ const imagePopup = document.querySelector(".popup_type_image");
 const imageInPopup = imagePopup.querySelector(".popup__image");
 const descriptionInPopup = imagePopup.querySelector(".popup__caption");
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}
+
 function openImagePopup(image) {
   imageInPopup.src = image.src;
   imageInPopup.alt = image.alt;
@@ -54,6 +64,7 @@ popups.forEach((popup) => {
 editButton.addEventListener("click", (evt) => {
   inputNameProfile.value = profileName.textContent;
   inputDescriptionProfile.value = profileDescription.textContent;
+  clearValidaton(editForm, validationConfig)
   openPopup(editPopup);
 });
 editForm.addEventListener("submit", (evt) => {
@@ -68,6 +79,7 @@ editForm.addEventListener("submit", (evt) => {
 });
 
 addButton.addEventListener("click", (evt) => {
+  clearValidaton(addForm, validationConfig)
   openPopup(addPopup);
 });
 addForm.addEventListener("submit", (evt) => {
@@ -85,3 +97,5 @@ addForm.addEventListener("submit", (evt) => {
   addForm.reset();
   closePopup(addPopup);
 });
+
+enableValidation(validationConfig)
