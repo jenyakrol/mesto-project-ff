@@ -7,6 +7,25 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  position: relative;
+}
+
+.profile__image::after {
+  content: '';
+  background-image: url(../../../images/pencil.svg), linear-gradient(rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.8));
+  position: absolute;
+  background-repeat: no-repeat;
+  background-position: center;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 1;
+  scale: 1.03;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.profile__image:hover::after {
+  opacity: 1;
 }
 
 @media screen and (max-width: 740px) {
