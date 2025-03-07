@@ -24,11 +24,9 @@ function createCard(
   cardTitle.textContent = cardOnServer.name;
   numberOfLikes.textContent = cardOnServer.likes.length;
 
-  newCard.dataset.cardId = cardOnServer['_id']
-
   if (isYourCard) {
     deleteButton.addEventListener("click", () =>
-      deleteFunction(newCard.dataset.cardId)
+      deleteFunction(cardOnServer['_id'])
     );
   } else {
     deleteButton.remove();
@@ -39,7 +37,7 @@ function createCard(
   }
 
   likeButton.addEventListener('click', () => {
-    likeFunction(likeButton, newCard.dataset.cardId)
+    likeFunction(likeButton, cardOnServer['_id'], isYouLiked)
   })
   
   cardImage.addEventListener("click", () => openFunction(cardImage));

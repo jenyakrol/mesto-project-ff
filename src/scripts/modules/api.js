@@ -17,9 +17,6 @@ const loadData = (additionalUrl) => {
 
       return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 const patchProfile = (changes, additionalUrl) => {
@@ -38,9 +35,6 @@ const patchProfile = (changes, additionalUrl) => {
 
       return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 const postNewCard = (placeName, placeLink) => {
@@ -54,18 +48,15 @@ const postNewCard = (placeName, placeLink) => {
   })
     .then((res) => {
       if (res.ok) {
-        res.json();
+        return res.json();
       }
 
       return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 const deleteFromServer = (cardId) => {
-  fetch(`${config.baseUrl}cards/${cardId}`, {
+  return fetch(`${config.baseUrl}cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
   })
@@ -76,9 +67,6 @@ const deleteFromServer = (cardId) => {
 
       return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .catch((err) => {
-      console.log(err);
-    });
 };
 
 const likeOnServer = (cardId, fetchMethod) => {
@@ -88,14 +76,11 @@ const likeOnServer = (cardId, fetchMethod) => {
   })
     .then((res) => {
       if (res.ok) {
-        return;
+        return res.json();
       }
 
       return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    })    
 };
 
 export { loadData, patchProfile, postNewCard, deleteFromServer, likeOnServer };

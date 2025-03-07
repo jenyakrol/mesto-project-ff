@@ -1,5 +1,6 @@
 import "../pages/index.css";
 import {
+  checkResponseContentType,
   deleteFromServer,
   likeOnServer,
   loadData,
@@ -64,7 +65,7 @@ const updateProfile = () => {
 };
 
 const updateCards = (profile) => {
-  loadData("cards/").then((cards) => {
+  return loadData("cards/").then((cards) => {
     clearCards(cardsConatiner);
     cards.forEach((item) => {
       const isYourCard = profile["_id"] === item.owner["_id"];
@@ -91,8 +92,14 @@ const updateCards = (profile) => {
   });
 };
 
-function updateSite() {
-  updateProfile().then((profile) => updateCards(profile));
+function updateContent() {
+  return updateProfile()
+    .then((profile) => {
+      return updateCards(profile);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 function openImagePopup(image) {
@@ -103,19 +110,31 @@ function openImagePopup(image) {
 }
 
 const deleteCard = (cardId) => {
-  deleteFromServer(cardId).then(() => updateSite);
+  deleteFromServer(cardId)
+    .then(() => {
+      return updateContent();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
-const likeCard = (likeButton, cardId) => {
+const likeCard = (likeButton, cardId, isLiked) => {
   likeButton.classList.toggle("card__like-button_is-active");
   let likeMethod = "";
-  if (likeButton.classList.contains("card__like-button_is-active")) {
+  if (!isLiked) {
     likeMethod = "PUT";
   } else {
     likeMethod = "DELETE";
   }
 
-  likeOnServer(cardId, likeMethod).then(() => updateSite());
+  likeOnServer(cardId, likeMethod)
+    .then(() => {
+      return updateContent();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 popups.forEach((popup) => {
@@ -130,17 +149,15 @@ editButton.addEventListener("click", () => {
   openPopup(editPopup);
 });
 editForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  changeButtonText(editForm, "Сохранение...");
-  patchProfile({
-    name: inputNameProfile.value,
-    about: inputDescriptionProfile.value,
-  })
-    .then(() => updateSite())
-    .then(() => {
-      changeButtonText(editForm, "Сохранить");
-      closePopup(editPopup);
-    });
+  submitFunction(
+    patchProfile({
+      name: inputNameProfile.value,
+      about: inputDescriptionProfile.value,
+    }),
+    editForm,
+    editPopup,
+    evt
+  );
 });
 
 editAvatarButton.addEventListener("click", () => {
@@ -148,20 +165,17 @@ editAvatarButton.addEventListener("click", () => {
   openPopup(editAvatarPopup);
 });
 editAvatarForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  changeButtonText(editAvatarForm, "Сохранение...");
-  patchProfile(
-    {
-      avatar: inputUrlEditAvatar.value,
-    },
-    "avatar/"
-  )
-    .then(() => updateSite())
-    .then(() => {
-      changeButtonText(editAvatarForm, "Сохранить");
-      editAvatarForm.reset();
-      closePopup(editAvatarPopup);
-    });
+  submitFunction(
+    patchProfile(
+      {
+        avatar: inputUrlEditAvatar.value,
+      },
+      "avatar/"
+    ),
+    editAvatarForm,
+    editAvatarPopup,
+    evt
+  );
 });
 
 addButton.addEventListener("click", () => {
@@ -169,21 +183,35 @@ addButton.addEventListener("click", () => {
   openPopup(addPopup);
 });
 addForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  changeButtonText(addForm, "Сохранение...");
-  postNewCard(inputNameAddNewCard.value, inputLinkAddNewCard.value)
-    .then(() => updateSite())
-    .then(() => {
-      changeButtonText(addForm, "Сохранить");
-      addForm.reset();
-      closePopup(addPopup);
-    });
+  submitFunction(
+    postNewCard(inputNameAddNewCard.value, inputLinkAddNewCard.value),
+    addForm,
+    addPopup,
+    evt
+  );
 });
+
+function submitFunction(mainFunction, form, popup, evt) {
+  evt.preventDefault();
+  changeButtonText(form, "Сохранение...");
+  mainFunction
+    .then(() => {
+      return updateContent();
+    })
+    .then(() => {
+      changeButtonText(form, "Сохранить");
+      form.reset();
+      closePopup(popup);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
 function changeButtonText(form, newText) {
   const button = form.querySelector(".button");
   button.textContent = newText;
 }
 
-updateSite();
+updateContent();
 enableValidation(validationConfig);
