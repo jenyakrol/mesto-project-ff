@@ -9,14 +9,13 @@ const config = {
 const loadData = (additionalUrl) => {
   return fetch(`${config.baseUrl + additionalUrl}`, {
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
 
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
 };
 
 const patchProfile = (changes, additionalUrl) => {
@@ -27,14 +26,13 @@ const patchProfile = (changes, additionalUrl) => {
     method: "PATCH",
     headers: config.headers,
     body: JSON.stringify(changes),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return;
-      }
+  }).then((res) => {
+    if (res.ok) {
+      return;
+    }
 
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
 };
 
 const postNewCard = (placeName, placeLink) => {
@@ -45,42 +43,39 @@ const postNewCard = (placeName, placeLink) => {
       name: placeName,
       link: placeLink,
     }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
 
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
 };
 
 const deleteFromServer = (cardId) => {
   return fetch(`${config.baseUrl}cards/${cardId}`, {
     method: "DELETE",
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return;
-      }
+  }).then((res) => {
+    if (res.ok) {
+      return;
+    }
 
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
 };
 
 const likeOnServer = (cardId, fetchMethod) => {
   return fetch(`${config.baseUrl}cards/likes/${cardId}`, {
     method: fetchMethod,
     headers: config.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
+  }).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
 
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })    
+    return Promise.reject(`Ошибка: ${res.status}`);
+  });
 };
 
 export { loadData, patchProfile, postNewCard, deleteFromServer, likeOnServer };

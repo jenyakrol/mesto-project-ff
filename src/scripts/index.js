@@ -68,15 +68,6 @@ const updateCards = (profile) => {
   return loadData("cards/").then((cards) => {
     clearCards(cardsConatiner);
     cards.forEach((item) => {
-      const isYourCard = profile["_id"] === item.owner["_id"];
-      let isYouLiked = false;
-
-      item.likes.forEach((like) => {
-        if (like["_id"] === profile["_id"]) {
-          isYouLiked = true;
-        }
-      });
-
       cardsConatiner.append(
         createCard(
           item,
@@ -84,8 +75,7 @@ const updateCards = (profile) => {
           deleteCard,
           likeCard,
           openImagePopup,
-          isYourCard,
-          isYouLiked
+          profile["_id"]
         )
       );
     });

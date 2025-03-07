@@ -9,8 +9,7 @@ function createCard(
   deleteFunction,
   likeFunction,
   openFunction,
-  isYourCard,
-  isYouLiked
+  profileId
 ) {
   const newCard = cardTemplate.querySelector(".card").cloneNode(true);
   const cardImage = newCard.querySelector(".card__image");
@@ -19,6 +18,15 @@ function createCard(
   const likeButton = newCard.querySelector(".card__like-button");
   const numberOfLikes = newCard.querySelector(".card__number-of-likes");
 
+  const isYourCard = profileId === cardOnServer.owner["_id"];
+  let isYouLiked = false
+
+  cardOnServer.likes.forEach(like => {
+    if (like["_id"] === profileId) {
+      isYouLiked = true
+    }
+  })
+
   cardImage.src = cardOnServer.link;
   cardImage.alt = cardOnServer.name;
   cardTitle.textContent = cardOnServer.name;
@@ -26,7 +34,7 @@ function createCard(
 
   if (isYourCard) {
     deleteButton.addEventListener("click", () =>
-      deleteFunction(cardOnServer['_id'])
+      deleteFunction(cardOnServer["_id"])
     );
   } else {
     deleteButton.remove();
@@ -36,10 +44,10 @@ function createCard(
     likeButton.classList.add("card__like-button_is-active");
   }
 
-  likeButton.addEventListener('click', () => {
-    likeFunction(likeButton, cardOnServer['_id'], isYouLiked)
-  })
-  
+  likeButton.addEventListener("click", () => {
+    likeFunction(likeButton, cardOnServer["_id"], isYouLiked);
+  });
+
   cardImage.addEventListener("click", () => openFunction(cardImage));
 
   return newCard;
