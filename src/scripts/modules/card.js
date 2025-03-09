@@ -1,7 +1,28 @@
-function clearCards(container) {
-  const cards = container.querySelectorAll(".card");
-  cards.forEach((card) => card.remove());
-}
+const deleteCard = (deleteFromServer) => (cardId, card) => {
+  deleteFromServer(cardId).catch((err) => {
+    console.log(err);
+  });
+  card.remove();
+};
+
+const likeCard =
+  (likeOnServer) => (likeButton, cardId, isLiked, likesCounter) => {
+    likeButton.classList.toggle("card__like-button_is-active");
+    let likeMethod = "";
+    if (likeButton.classList.contains("card__like-button_is-active")) {
+      likeMethod = "PUT";
+    } else {
+      likeMethod = "DELETE";
+    }
+
+    likeOnServer(cardId, likeMethod)
+      .then((likesObject) => {
+        likesCounter.textContent = likesObject.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
 function createCard(
   cardOnServer,
@@ -16,25 +37,25 @@ function createCard(
   const cardTitle = newCard.querySelector(".card__title");
   const deleteButton = newCard.querySelector(".card__delete-button");
   const likeButton = newCard.querySelector(".card__like-button");
-  const numberOfLikes = newCard.querySelector(".card__number-of-likes");
+  const likesCounter = newCard.querySelector(".card__number-of-likes");
 
   const isYourCard = profileId === cardOnServer.owner["_id"];
-  let isYouLiked = false
+  let isYouLiked = false;
 
-  cardOnServer.likes.forEach(like => {
+  cardOnServer.likes.forEach((like) => {
     if (like["_id"] === profileId) {
-      isYouLiked = true
+      isYouLiked = true;
     }
-  })
+  });
 
   cardImage.src = cardOnServer.link;
   cardImage.alt = cardOnServer.name;
   cardTitle.textContent = cardOnServer.name;
-  numberOfLikes.textContent = cardOnServer.likes.length;
+  likesCounter.textContent = cardOnServer.likes.length;
 
   if (isYourCard) {
     deleteButton.addEventListener("click", () =>
-      deleteFunction(cardOnServer["_id"])
+      deleteFunction(cardOnServer["_id"], newCard)
     );
   } else {
     deleteButton.remove();
@@ -45,7 +66,7 @@ function createCard(
   }
 
   likeButton.addEventListener("click", () => {
-    likeFunction(likeButton, cardOnServer["_id"], isYouLiked);
+    likeFunction(likeButton, cardOnServer["_id"], isYouLiked, likesCounter);
   });
 
   cardImage.addEventListener("click", () => openFunction(cardImage));
@@ -53,4 +74,4 @@ function createCard(
   return newCard;
 }
 
-export { createCard, clearCards };
+export { createCard, deleteCard, likeCard };

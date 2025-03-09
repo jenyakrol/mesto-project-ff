@@ -6,15 +6,19 @@ const config = {
   },
 };
 
+function checkFetchStatus(res) {
+  if (res.ok) {
+    return res.json();
+  }
+
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 const loadData = (additionalUrl) => {
   return fetch(`${config.baseUrl + additionalUrl}`, {
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkFetchStatus(res);
   });
 };
 
@@ -27,11 +31,7 @@ const patchProfile = (changes, additionalUrl) => {
     headers: config.headers,
     body: JSON.stringify(changes),
   }).then((res) => {
-    if (res.ok) {
-      return;
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkFetchStatus(res);
   });
 };
 
@@ -44,11 +44,7 @@ const postNewCard = (placeName, placeLink) => {
       link: placeLink,
     }),
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkFetchStatus(res);
   });
 };
 
@@ -57,11 +53,7 @@ const deleteFromServer = (cardId) => {
     method: "DELETE",
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return;
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkFetchStatus(res);
   });
 };
 
@@ -70,11 +62,7 @@ const likeOnServer = (cardId, fetchMethod) => {
     method: fetchMethod,
     headers: config.headers,
   }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return checkFetchStatus(res);
   });
 };
 

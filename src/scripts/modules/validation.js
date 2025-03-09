@@ -11,12 +11,12 @@ function enableValidation(selectors) {
 }
 
 function setEventListeners(form, input, submitButton, selectors) {
-  input.addEventListener("input", (evt) => {
-    checkValidity(form, input, submitButton, selectors);
+  input.addEventListener("input", () => {
+    checkInputValidity(form, input, submitButton, selectors);
   });
 }
 
-function checkValidity(form, input, submitButton, selectors) {
+function checkInputValidity(form, input, submitButton, selectors) {
   if (input.validity.patternMismatch) {
     input.setCustomValidity(input.dataset.errorMessage);
   } else {
@@ -46,12 +46,15 @@ function hideInputError(form, input, submitButton, selectors) {
   const errorElement = form.querySelector(`.${input.name}-error`);
 
   errorElement.textContent = "";
-
-  submitButton.removeAttribute("disabled", "");
+  errorElement.classList.remove(selectors.errorClass);
 
   input.classList.remove(selectors.inputErrorClass);
-  submitButton.classList.remove(selectors.inactiveButtonClass);
-  errorElement.classList.remove(selectors.errorClass);
+  input.setCustomValidity("");
+
+  if (form.checkValidity()) {
+    submitButton.classList.remove(selectors.inactiveButtonClass);
+    submitButton.removeAttribute("disabled", "");
+  }
 }
 
 function clearValidaton(form, validationConfig) {
@@ -61,10 +64,12 @@ function clearValidaton(form, validationConfig) {
   );
 
   inputs.forEach((input) => {
+    hideInputError(form, input, submitButton, validationConfig);
     if (!input.validity.valid) {
       input.value = "";
+      submitButton.classList.add(validationConfig.inactiveButtonClass);
+      submitButton.setAttribute("disabled", "");
     }
-    checkValidity(form, input, submitButton, validationConfig);
   });
 }
 
