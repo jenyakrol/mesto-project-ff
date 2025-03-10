@@ -78,13 +78,13 @@ const updateCards = (profile, cards) => {
 };
 
 function loadContent() {
-  Promise.all([loadData("users/me/"), loadData("cards/")]).then(
-    ([profile, cards]) => {
+  Promise.all([loadData("users/me/"), loadData("cards/")])
+    .then(([profile, cards]) => {
       profileOnServer = profile;
       updateProfile(profileOnServer);
       updateCards(profileOnServer, cards);
-    }
-  );
+    })
+    .catch((err) => console.log(err));
 }
 
 function openImagePopup(image) {
@@ -110,14 +110,14 @@ editForm.addEventListener("submit", (evt) => {
     .then((profile) => {
       profileOnServer = profile;
       updateProfile(profileOnServer);
+      editForm.reset();
+      closePopup(editPopup);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       changeButtonText(editForm, "Сохранить");
-      editForm.reset();
-      closePopup(editPopup);
     });
 });
 
@@ -137,14 +137,14 @@ editAvatarForm.addEventListener("submit", (evt) => {
     .then((profile) => {
       profileOnServer = profile;
       updateProfile(profileOnServer);
+      editAvatarForm.reset();
+      closePopup(editAvatarPopup);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       changeButtonText(editAvatarForm, "Сохранить");
-      editAvatarForm.reset();
-      closePopup(editAvatarPopup);
     });
 });
 
@@ -167,14 +167,14 @@ addForm.addEventListener("submit", (evt) => {
           profileOnServer["_id"]
         )
       );
+      addForm.reset();
+      closePopup(addPopup);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       changeButtonText(addForm, "Сохранить");
-      addForm.reset();
-      closePopup(addPopup);
     });
 });
 

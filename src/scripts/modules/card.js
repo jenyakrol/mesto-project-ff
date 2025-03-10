@@ -1,28 +1,30 @@
 const deleteCard = (deleteFromServer) => (cardId, card) => {
-  deleteFromServer(cardId).catch((err) => {
-    console.log(err);
-  });
-  card.remove();
+  deleteFromServer(cardId)
+    .then(() => {
+      card.remove();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
-const likeCard =
-  (likeOnServer) => (likeButton, cardId, isLiked, likesCounter) => {
-    likeButton.classList.toggle("card__like-button_is-active");
-    let likeMethod = "";
-    if (likeButton.classList.contains("card__like-button_is-active")) {
-      likeMethod = "PUT";
-    } else {
-      likeMethod = "DELETE";
-    }
+const likeCard = (likeOnServer) => (likeButton, cardId, likesCounter) => {
+  let likeMethod = "";
+  if (!likeButton.classList.contains("card__like-button_is-active")) {
+    likeMethod = "PUT";
+  } else {
+    likeMethod = "DELETE";
+  }
 
-    likeOnServer(cardId, likeMethod)
-      .then((likesObject) => {
-        likesCounter.textContent = likesObject.likes.length;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  likeOnServer(cardId, likeMethod)
+    .then((likesObject) => {
+      likesCounter.textContent = likesObject.likes.length;
+      likeButton.classList.toggle("card__like-button_is-active");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 function createCard(
   cardOnServer,
@@ -66,7 +68,7 @@ function createCard(
   }
 
   likeButton.addEventListener("click", () => {
-    likeFunction(likeButton, cardOnServer["_id"], isYouLiked, likesCounter);
+    likeFunction(likeButton, cardOnServer["_id"], likesCounter);
   });
 
   cardImage.addEventListener("click", () => openFunction(cardImage));
